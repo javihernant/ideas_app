@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    build: .
+    command: poetry run ./manage.py runserver 0.0.0.0:8000
+    container_name: ideas_app-web
+    volumes:
+      - .:/ideas_app
+    ports:
+      - "8000:8000"
+    environment:
+          - POSTGRES_NAME=postgres
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
