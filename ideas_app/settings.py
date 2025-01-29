@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'gqlauth'
 ]
 
 MIDDLEWARE = [
@@ -47,7 +49,34 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'gqlauth.core.middlewares.django_jwt_middleware'
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AUTH_USER_MODEL = "users.CustomUser" 
+
+from gqlauth.settings_type import GqlAuthSettings
+
+from strawberry.types.field import StrawberryField
+from strawberry.annotation import StrawberryAnnotation
+
+email_field = StrawberryField(
+    python_name="email", default=None, type_annotation=StrawberryAnnotation(str)
+)
+username_field = StrawberryField(
+    python_name="username", default=None, type_annotation=StrawberryAnnotation(str)
+)
+GQL_AUTH = GqlAuthSettings(
+    LOGIN_REQUIRE_CAPTCHA=False,
+    REGISTER_REQUIRE_CAPTCHA=False,
+    LOGIN_FIELDS=[email_field],
+    UPDATE_MUTATION_FIELDS=[username_field],
+)
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ROOT_URLCONF = 'ideas_app.urls'
 
