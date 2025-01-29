@@ -4,22 +4,16 @@ Social network app to create and share ideas
 
 ## Run app
 
-Using docker compose:
+
+Start docker compose services:
+
 ```sudo docker compose up```
-
-If needed to rebuild any of the services configured in docker-compose, use:
-```sudo docker compose build --no-cache <service>```
-
-You can also run any application inside a container by using:
-```sudo docker compose run web django-admin startproject ideasapp .```
-
-##Considerations
-- Uses [strawberry-django-auth](https://github.com/nrbnlulu/strawberry-django-auth) for authentication, that provides an authentication token to be used by the mobile app.
 
 ## Usage
 
 ### Register a user and verify account
 To register a user specify username, email and password:
+
 ```
 mutation {
   register(
@@ -33,12 +27,14 @@ mutation {
   }
 }
 ```
+
 After posting this mutation, an email will be sent with a link containing a verification token. It looks like this:
 `eyJ1c2VybmFtZSI6InVzZXIxIiwiYWN0aW9uIjoiYWN0aXZhdGlvbiJ9:1tckid:4l4nB3FYWs0UHnxDwPN9wEpIMMkmQ01JiWDFM2FQoWA`
 
 NOTE: As of the current version of this project, email is sent to console stdout.
 
 Use it to verify the user just created with:
+
 ```
 mutation {
   verifyAccount(token: "<token>") {
@@ -74,6 +70,7 @@ mutation {
   }
 }
 ```
+
 It will return the authentication token that our mobile app can use.
 
 Additionally, we can view other info such as:
@@ -91,11 +88,14 @@ Additionally, we can view other info such as:
       }
     }
 ```
+
 Make sure to add the token in the headers like so:
+
 `{"authorization": "JWT <token>"}`
 
 ### Reset password
 A user can reset its password by receiving a password reset email:
+
 ```
 mutation {
   sendPasswordResetEmail(email:"user1@email.com") {
@@ -103,6 +103,7 @@ mutation {
   }
 }
 ```
+
 This email will contain a link with a token that should be used to later reset the user's password:
 
 ```
@@ -112,3 +113,28 @@ mutation {
   }
 }
 ```
+
+## Development
+
+### Ruff and pre-commit
+
+You can install a precommit that runs ruff previous to making a commit.
+
+You just have to:
+1. Install the following packages with your prefered python package manager (pip, pipx, etc.):
+  - pre-commit package
+  - ruff package
+2. Install the configured pre-commit hook in your .git directory using:
+```pre-commit install```
+
+pre-commit hooks are configured at `.pre-commit-config.yaml`
+
+### Some useful docker commands
+
+If needed to rebuild any of the services configured in docker-compose, use:
+
+```sudo docker compose build --no-cache <service>```
+
+You can also run any application inside a container by using:
+
+```sudo docker compose run web django-admin startproject ideasapp .```
