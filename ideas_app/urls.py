@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from django.urls.conf import include
+from strawberry.django.views import AsyncGraphQLView
+from django.views.decorators.csrf import csrf_exempt
+from users.schema import schema as users_schema
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("users/", include("users.urls")),
+    path("users/", csrf_exempt(AsyncGraphQLView.as_view(schema=users_schema))),
 ]
