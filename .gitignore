@@ -1,0 +1,12 @@
+.*
+db.sqlite3
+data/
+TODO
+
+#Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
