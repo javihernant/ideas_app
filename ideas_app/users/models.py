@@ -13,3 +13,7 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"  # e.g: "username", "email"
     EMAIL_FIELD = "email"  # e.g: "email", "primary_email"
     REQUIRED_FIELDS = ["username"]
+
+
+# class Account(models.Model):
+#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
