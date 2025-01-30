@@ -40,6 +40,22 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-choices-field"
+version = "2.3.0"
+description = "Django field that set/get django's new TextChoices/IntegerChoices enum."
+optional = false
+python-versions = ">=3.8,<4.0"
+groups = ["main"]
+files = [
+    {file = "django_choices_field-2.3.0-py3-none-any.whl", hash = "sha256:4bdcccf802bff9065af19798810de494dd16337fa46dae01680ede12a10280d6"},
+    {file = "django_choices_field-2.3.0.tar.gz", hash = "sha256:bb0c85c79737ab98bfb9c0d9ddf98010d612c0585be767890e25fd192c3d1694"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+typing_extensions = ">=4.0.0"
+
+[[package]]
 name = "django-stubs"
 version = "5.1.2"
 description = "Mypy stubs for Django"
@@ -422,4 +438,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "bebb0eb92f78b72d3b6af125db3de19df147ecb609e37e8d1d73f99c8796ac2b"
+content-hash = "ea4954a5ff6468f09ba1d43d83def77b9c66486a420a83d63d80b831555eef13"

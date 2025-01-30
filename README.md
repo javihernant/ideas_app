@@ -15,7 +15,7 @@ Start docker compose services:
 To register a user specify username, email and password:
 
 ```
-mutation {
+mutation RegisterUser1 {
   register(
     email: "user1@email.com",
     username: "user1",
@@ -36,7 +36,7 @@ NOTE: As of the current version of this project, email is sent to console stdout
 Use it to verify the user just created with:
 
 ```
-mutation {
+mutation VerifyAccount {
   verifyAccount(token: "<token>") {
     success,
     errors
@@ -48,7 +48,7 @@ mutation {
 You can log in with an email using this mutation:
 
 ```
-mutation {
+mutation TokenAuth {
   tokenAuth(email: "user1@email.com", password: "mypass1234") {
     success
     errors
@@ -81,7 +81,7 @@ Additionally, we can view other info such as:
 ### Retrieve data for the currently authenticated user
 
 ```
- query{
+ query Me {
       me{
         username
         verified
@@ -97,7 +97,7 @@ Make sure to add the token in the headers like so:
 A user can reset its password by receiving a password reset email:
 
 ```
-mutation {
+mutation PasswordResetEmail {
   sendPasswordResetEmail(email:"user1@email.com") {
     errors
   }
@@ -107,12 +107,31 @@ mutation {
 This email will contain a link with a token that should be used to later reset the user's password:
 
 ```
-mutation {
+mutation PasswordReset {
   passwordReset(token:"<token>", newPassword1:"mypassword0123", newPassword2:"mypassword0123" ){
     errors
   }
 }
 ```
+
+### Create an Idea
+
+A logged in user can create an idea by using:
+
+mutation CreateIdea {
+  createIdea(input:{title:"DIY project" text:"social network for sharing ideas" visibility:PUBLIC}) {
+    __typename
+      ... on OperationInfo { messages { message } }
+      ... on IdeaType {
+        title
+        text
+        visibility
+      }
+  }
+}
+
+Visibility is optional. If not provided it will default to PROTECTED, meaning only you and your followers
+will be able to see your ideas.
 
 ## Development
 

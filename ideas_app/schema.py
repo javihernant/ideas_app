@@ -1,12 +1,12 @@
 import strawberry
 from gqlauth.core.middlewares import JwtSchema
 
-# from .ideas.root import (IdeasMutation, IdeasQuery)
+from .ideas.root import IdeasMutation
 from .users.root import UsersMutation, UsersQuery
 
 
 @strawberry.type
-class Mutation(UsersMutation): ...
+class Mutation(UsersMutation, IdeasMutation): ...
 
 
 @strawberry.type

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "ideas_app.users",
+    "ideas_app.ideas",
     "gqlauth",
 ]
 
