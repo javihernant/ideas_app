@@ -1,11 +1,11 @@
 from . import models
-from strawberry import auto, ID
+from strawberry import auto, relay, ID
 import strawberry_django
 
 
 @strawberry_django.type(models.Idea)
-class IdeaType:
-    id: auto
+class IdeaType(relay.Node):
+    id: relay.GlobalID
     title: auto
     text: auto
     visibility: auto

@@ -24,3 +24,4 @@ class Idea(models.Model):
         choices_enum=Visibility,
         default=Visibility.PROTECTED,
     )
+    pub_date = models.DateTimeField(null=True)

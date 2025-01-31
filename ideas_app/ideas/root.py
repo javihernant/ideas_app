@@ -1,10 +1,13 @@
-from typing import cast
+from typing import cast, Iterable
 import strawberry
 from strawberry import Info, UNSET
 import strawberry_django
 from .types import IdeaType, IdeaInput, IdeaVisibilityInput
 from .models import Idea
 from django.core.exceptions import PermissionDenied
+from django.db.models import F
+from strawberry_django.relay import ListConnectionWithTotalCount
+from django.utils import timezone
 
 
 @strawberry.type
@@ -19,6 +22,7 @@ class IdeasMutation:
         new_idea = Idea(text=input.text, user=user, title=input.title)
         if input.visibility is not UNSET:
             new_idea.visibility = input.visibility
+        new_idea.pub_date = timezone.now()
         new_idea.save()
         return cast(IdeaType, new_idea)
 
@@ -39,4 +43,15 @@ class IdeasMutation:
 
 @strawberry.type
 class IdeasQuery:
-    ideas: IdeaType = strawberry_django.field()
+    # @strawberry_django.field(pagination=True)
+    @strawberry_django.connection(
+        ListConnectionWithTotalCount[IdeaType],
+    )
+    def my_ideas(self, info: Info) -> Iterable[Idea]:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+        ideas = Idea.objects.filter(user=user).order_by(
+            F("pub_date").desc(nulls_last=True)
+        )
+        return ideas

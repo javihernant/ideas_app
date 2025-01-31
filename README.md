@@ -155,6 +155,35 @@ mutation ModifyIdea {
 }
 ```
 
+### View my ideas
+
+A logged in user can view their ideas with this query:
+
+```
+query MyIdeas {
+  myIdeas {
+    totalCount
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        id
+        text
+        title
+        visibility
+      }
+    }
+  }
+}
+```
+
+Results are returned paginated. This would avoid saturating the server in case there were a big amount of items to be returned.
+Instead of returning them all at once, they would be sectioned in pages that the user could freely navigate through. 
+
+This is using strawberry's relay implementation. Check out the [docs](https://strawberry.rocks/docs/guides/relay) for
+more info on how they work.
 
 ## Development
 
