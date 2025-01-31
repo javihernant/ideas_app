@@ -2,7 +2,7 @@ from typing import cast
 import strawberry
 from strawberry import Info, UNSET
 import strawberry_django
-from .types import IdeaType, IdeaInput
+from .types import IdeaType, IdeaInput, IdeaVisibilityInput
 from .models import Idea
 from django.core.exceptions import PermissionDenied
 
@@ -21,6 +21,20 @@ class IdeasMutation:
             new_idea.visibility = input.visibility
         new_idea.save()
         return cast(IdeaType, new_idea)
+
+    @strawberry_django.mutation(handle_django_errors=True)
+    def change_idea_visibility(
+        self, info: Info, input: IdeaVisibilityInput
+    ) -> IdeaType:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+        idea = Idea.objects.filter(pk=input.id).get()
+        if idea.user.id != user.id:
+            raise PermissionDenied("User does not have permission to modify this idea")
+        idea.visibility = input.visibility
+        idea.save()
+        return cast(IdeaType, idea)
 
 
 @strawberry.type

@@ -118,6 +118,7 @@ mutation PasswordReset {
 
 A logged in user can create an idea by using:
 
+```
 mutation CreateIdea {
   createIdea(input:{title:"DIY project" text:"social network for sharing ideas" visibility:PUBLIC}) {
     __typename
@@ -129,9 +130,31 @@ mutation CreateIdea {
       }
   }
 }
+```
 
 Visibility is optional. If not provided it will default to PROTECTED, meaning only you and your followers
 will be able to see your ideas.
+
+### Modify visibility of an idea
+
+The visibility of an idea can be changed to PUBLIC, PROTECTED or PRIVATE.
+This operation requires the user to be authenticated.
+
+```
+mutation ModifyIdea {
+  changeIdeaVisibility(input:{id:3 visibility:PRIVATE}) {
+    __typename
+      ... on OperationInfo { messages { message } }
+      ... on IdeaType {
+        id
+        title
+        text
+        visibility
+      }
+  }
+}
+```
+
 
 ## Development
 

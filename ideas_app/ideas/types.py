@@ -1,5 +1,5 @@
 from . import models
-from strawberry import auto
+from strawberry import auto, ID
 import strawberry_django
 
 
@@ -16,3 +16,9 @@ class IdeaInput:
     title: auto
     text: auto
     visibility: auto
+
+
+@strawberry_django.input(models.Idea)
+class IdeaVisibilityInput:
+    id: ID
+    visibility: models.Idea.Visibility
