@@ -185,6 +185,29 @@ Instead of returning them all at once, they would be sectioned in pages that the
 This is using strawberry's relay implementation. Check out the [docs](https://strawberry.rocks/docs/guides/relay) for
 more info on how they work.
 
+### Send follow request
+
+To send a user a follow request, use this mutation providing the id of said user:
+
+```
+mutation RequestFollow {
+  requestFollow(followId:2) {
+    __typename
+      ... on OperationInfo { messages { message } }
+      ... on UserConnectionType {
+        id
+        follower {
+          pk
+        }
+        followed {
+          pk
+        }
+        isAccepted
+      }
+  }
+}
+```
+
 ## Development
 
 ### Ruff and pre-commit
