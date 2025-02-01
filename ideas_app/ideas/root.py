@@ -40,6 +40,20 @@ class IdeasMutation:
         idea.save()
         return cast(IdeaType, idea)
 
+    @strawberry_django.mutation(handle_django_errors=True)
+    def delete_idea(self, info: Info, idea_id: strawberry.ID) -> IdeaType:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+        idea = Idea.objects.get(pk=idea_id)
+        if idea.user.id != user.id:
+            raise PermissionDenied("User does not have permission to delete this idea")
+
+        idea_pk = idea.pk
+        idea.delete()
+        idea.pk = idea_pk
+        return cast(IdeaType, idea)
+
 
 @strawberry.type
 class IdeasQuery:
