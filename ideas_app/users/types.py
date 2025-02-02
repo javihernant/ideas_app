@@ -8,3 +8,9 @@ class UserConnectionType(relay.Node):
     follower: auto
     followed: auto
     is_accepted: auto
+
+
+@strawberry_django.type(models.CustomUser)
+class UserLimitedType:
+    id: auto
+    username: auto

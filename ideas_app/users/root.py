@@ -5,7 +5,7 @@ from gqlauth.user.queries import UserQueries, UserType
 from gqlauth.user import arg_mutations as mutations
 from django.core.exceptions import PermissionDenied, ValidationError
 from .models import UserConnection, CustomUser
-from .types import UserConnectionType
+from .types import UserConnectionType, UserLimitedType
 from typing import cast, Iterable
 from strawberry_django.relay import ListConnectionWithTotalCount
 
@@ -23,6 +23,34 @@ class UsersQuery:
             raise PermissionDenied("No user logged in")
         requests = user.followers.filter(is_accepted=False)
         return requests
+
+    @strawberry_django.connection(
+        ListConnectionWithTotalCount[UserLimitedType],
+    )
+    def get_following(self, info: Info) -> Iterable[CustomUser]:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+
+        following_ids = user.following.filter(is_accepted=True).values_list(
+            "followed", flat=True
+        )
+        following_users = CustomUser.objects.filter(pk__in=list(following_ids))
+        return following_users
+
+    @strawberry_django.connection(
+        ListConnectionWithTotalCount[UserLimitedType],
+    )
+    def get_followers(self, info: Info) -> Iterable[CustomUser]:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+
+        followers_ids = user.followers.filter(is_accepted=True).values_list(
+            "follower", flat=True
+        )
+        follower_users = CustomUser.objects.filter(pk__in=list(followers_ids))
+        return follower_users
 
 
 @strawberry.type
@@ -93,3 +121,29 @@ class UsersMutation:
         connection.delete()
         connection.pk = conn_pk
         return connection
+
+    @strawberry_django.mutation(handle_django_errors=True)
+    def unfollow(self, info: Info, followed_id: int) -> UserConnectionType:
+        user = info.context["request"].user
+
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+
+        conn = user.following.filter(followed=followed_id).first()
+        if conn is None:
+            raise ValidationError("error trying to unfollow a non-followed user")
+        conn.delete()
+        return conn
+
+    @strawberry_django.mutation(handle_django_errors=True)
+    def remove_follower(self, info: Info, follower_id: int) -> UserConnectionType:
+        user = info.context["request"].user
+
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+
+        conn = user.followers.filter(follower=follower_id).first()
+        if conn is None:
+            raise ValidationError("error trying to remove non-existing follower")
+        conn.delete()
+        return conn

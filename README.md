@@ -278,6 +278,84 @@ mutation DenyRequest {
 }
 ```
 
+### Get a user's following list
+
+A user can list all users that they follow
+
+```
+query GetFollowing {
+  getFollowing {
+    edges {
+      node {
+        id
+        username
+      }
+    }
+  }
+}
+```
+
+### Get a user's follower list
+
+A user can list all their followers
+
+```
+query GetFollowers {
+  getFollowers {
+    edges {
+      node {
+        id
+        username
+      }
+    }
+  }
+}
+```
+
+### Unfollow a user
+
+To unfollow a user, use the id of the user wanting to unfollow:
+
+```
+mutation Unfollow {
+  unfollow(followedId:2) {
+    __typename
+      ... on OperationInfo { messages { message } }
+      ... on UserConnectionType {
+        follower {
+          pk
+        }
+        followed {
+          pk
+        }
+        isAccepted
+      }
+  }
+}
+```
+
+### Remove follower
+
+To remove a user from your list of followers, use:
+
+```
+mutation RemoveFollower {
+  removeFollower(followerId:2) {
+    __typename
+      ... on OperationInfo { messages { message } }
+      ... on UserConnectionType {
+        follower {
+          pk
+        }
+        followed {
+          pk
+        }
+        isAccepted
+      }
+  }
+}
+```
+
 ## Development
 
 ### Ruff and pre-commit
