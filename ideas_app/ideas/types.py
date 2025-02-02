@@ -9,6 +9,8 @@ class IdeaType(relay.Node):
     title: auto
     text: auto
     visibility: auto
+    user: auto
+    pub_date: auto
 
 
 @strawberry_django.input(models.Idea)

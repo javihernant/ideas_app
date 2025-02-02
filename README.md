@@ -356,6 +356,65 @@ mutation RemoveFollower {
 }
 ```
 
+### Search users
+
+You can search other users by using their username. Users whose username contain
+`username` string provided will be fetched:
+
+```
+query SearchUser {
+  searchUser(username:"user1") {
+    edges {
+      node {
+        id
+        username
+      }
+    }
+  }
+}
+```
+
+### Search other's ideas
+
+You can search for the ideas published by another user with:
+
+```
+query GetUserIdeas {
+  getUserIdeas(userId: 2) {
+    edges {
+      node {
+        id
+        title
+        text
+        visibility
+      }
+    }
+  }
+}
+```
+
+### Timeline
+
+To retrieve your timeline use this query.
+
+```
+query Timeline {
+  myTimeline {
+    edges {
+      node {
+        id
+        title
+        text
+        visibility
+        user {
+          pk
+        }
+      }
+    }
+  }
+}
+```
+
 ## Development
 
 ### Ruff and pre-commit

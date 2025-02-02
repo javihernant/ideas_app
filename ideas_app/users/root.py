@@ -52,6 +52,16 @@ class UsersQuery:
         follower_users = CustomUser.objects.filter(pk__in=list(followers_ids))
         return follower_users
 
+    @strawberry_django.connection(
+        ListConnectionWithTotalCount[UserLimitedType],
+    )
+    def search_user(self, info: Info, username: str) -> Iterable[CustomUser]:
+        user = info.context["request"].user
+        if not user or not user.is_authenticated or not user.is_active:
+            raise PermissionDenied("No user logged in")
+        list_users = CustomUser.objects.filter(username__contains=username)
+        return list_users
+
 
 @strawberry.type
 class UsersMutation:
