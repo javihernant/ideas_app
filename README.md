@@ -9,6 +9,12 @@ Start docker compose services:
 
 ```sudo docker compose up```
 
+### Run tests
+
+To run tests use pytest. Execute it from the `web` docker image:
+
+```sudo docker compose run web poetry run pytest```
+
 ## Usage
 
 ### Register a user and verify account
